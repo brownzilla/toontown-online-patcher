@@ -9,6 +9,7 @@
   include 'default.php';
   $db = doDB();
   $response = "";
+  $salt = "SMASH-YOUR-KEYBOARD-HERE"; // This is used to add extra protection to your logins.
 
   // Server Accessibility.
   $isTest   = 0;
@@ -16,7 +17,9 @@
 
   // Where the server gets the data. e.g https://example.com/api/login/?u=demo&p=demo
   $usr  = $_GET['u']; // Unfortunately, I'm unable to change these. They're in the latest build of the launcher.
-  $pwd  = hash('base64', $_GET['p']); // Encrypting the password for security.
+  $pwd  = $_GET['p'];
+  $spwd = $salt . $pwd; // Combinding the salt and pwd together.
+  $hpwd = password_hash($spwd, PASSWORD_DEFAULT); // Encrypting the password for security.
   $ip   = $_SERVER['REMOTE_ADDR'];
 
   // This is where the DB is queried.
@@ -28,10 +31,15 @@
     $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Unable to retrieve account "$usr".\n"; // Checking to see if the account exists.
   } else {
     while ($arr = $stmt->fetch_assoc()) {
+      $ID = $arr['ID'];
       if ($pwd != $row['Password']) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
-        $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')")
-      } elseif ()
+        $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')"); // Inserting Login Attempt in the DB
+      } elseif ($isTest == 1) {
+        if ($arr['Ranking'] == 'Admin' || $arr['Ranking'] == 'Developer' || $arr['Ranking'] == 'Moderator') {
+          $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=asdf\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1"; // Distributing Game Token
+        }
+      }
     }
   }
 
