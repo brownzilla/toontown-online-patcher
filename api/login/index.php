@@ -32,7 +32,7 @@
   } else {
     while ($arr = $stmt->fetch_assoc()) {
       $ID = $arr['ID'];
-      if ($pwd != $row['Password']) {
+      if (!password_verify($spwd, $hpwd)) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
         $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')"); // Inserting Login Attempt in the DB
       } elseif ($isTest == 1) {
