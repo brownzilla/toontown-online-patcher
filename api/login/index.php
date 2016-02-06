@@ -19,7 +19,6 @@
   $usr  = $_GET['u']; // Unfortunately, I'm unable to change these. They're in the latest build of the launcher.
   $pwd  = $_GET['p'];
   $spwd = $salt . $pwd; // Combinding the salt and pwd together.
-  $hpwd = password_hash($spwd, PASSWORD_DEFAULT); // Encrypting the password for security.
   $ip   = $_SERVER['REMOTE_ADDR'];
 
   // This is where the DB is queried.
@@ -33,6 +32,7 @@
     while ($arr = $stmt->fetch_assoc()) {
       $ID = $arr['ID'];
       $gmTok = hash('base64', $hpwd); // Encrypting the salt encrypted password. Wow, I love security. :^)
+      $hpwd = $arr['Password'];
       if (!password_verify($spwd, $hpwd)) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
         $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')"); // Inserting Login Attempt in the DB
