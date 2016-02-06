@@ -10,6 +10,10 @@
   $db = doDB();
   $response = "";
 
+  // Server Accessibility.
+  $isTest   = 0;
+  $isClosed = 0;
+
   // Where the server gets the data. e.g https://example.com/api/login/?u=demo&p=demo
   $usr  = $_GET['u']; // Unfortunately, I'm unable to change these. They're in the latest build of the launcher.
   $pwd  = hash('base64', $_GET['p']); // Encrypting the password for security.
@@ -25,8 +29,9 @@
   } else {
     while ($arr = $stmt->fetch_assoc()) {
       if ($pwd != $row['Password']) {
-        $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Unable to retrieve account "$usr".\n"; // Checking to see if the password is incorrect.
-      }
+        $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
+        $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')")
+      } elseif ()
     }
   }
 
