@@ -24,7 +24,7 @@
     $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Unable to retrieve account "$usr".\n"; // Checking to see if the account exists.
   } else {
     while ($arr = $stmt->fetch_assoc()) {
-      if ($row['Password'] != $pwd) {
+      if ($pwd != $row['Password']) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Unable to retrieve account "$usr".\n"; // Checking to see if the password is incorrect.
       }
     }
