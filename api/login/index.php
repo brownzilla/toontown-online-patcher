@@ -1,6 +1,14 @@
-LOGIN_ACTION=PLAY
-LOGIN_TOKEN=Test
-GAME_USERNAME=Test
-GAME_DISL_ID=1
-USER_TOONTOWN_ACCESS=FULL
-GAME_CHAT_ELIGIBLE=1
+<?php
+  /*
+    This is where the client grabs the data.
+    Author: brownzilla
+    Author URL: https://brownzilla.me
+    Version: 0.1
+  */
+
+  include 'default.php';
+
+  $usr = $_GET['u'];
+  $pwd = $_GET['p']; // Unfortunately, I'm unable to change these. They're in the latest build of the launcher.
+
+  
