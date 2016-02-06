@@ -32,12 +32,23 @@
   } else {
     while ($arr = $stmt->fetch_assoc()) {
       $ID = $arr['ID'];
+      $gmTok = hash('base64', $hpwd); // Encrypting the salt encrypted password. Wow, I love security. :^)
       if (!password_verify($spwd, $hpwd)) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
         $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')"); // Inserting Login Attempt in the DB
       } elseif ($isTest == 1) {
+        if ($arr['TestAccess'] == 1) {
+          $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1"; // Distributing Game Token
+        } else {
+          $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=You're unable to participate in Test Town.\n";
+          $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Trying to access Test server.')");
+        }
+      } elseif ($isClosed == 1) {
         if ($arr['Ranking'] == 'Admin' || $arr['Ranking'] == 'Developer' || $arr['Ranking'] == 'Moderator') {
-          $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=asdf\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1"; // Distributing Game Token
+          $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1";
+        } else {
+          $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Server is closed for maintenance\n";
+          $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Trying to access closed server.')");
         }
       }
     }
