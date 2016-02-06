@@ -8,7 +8,7 @@
 
   include 'default.php';
   $db = doDB();
-  $response = "";
+  $response = "Toontown Online Launcher API. https://github.com/brownzilla/toontown-online-patcher/"; // I would greatly appreciate it if you didn't change this. :^)
   $salt = "SMASH-YOUR-KEYBOARD-HERE"; // This is used to add extra protection to your logins.
 
   // Server Accessibility.
@@ -31,25 +31,32 @@
   } else {
     while ($arr = $stmt->fetch_assoc()) {
       $ID = $arr['ID'];
+      $hpwd = $arr['Password']; // Grabbing the User's password.
       $gmTok = hash('base64', $hpwd); // Encrypting the salt encrypted password. Wow, I love security. :^)
-      $hpwd = $arr['Password'];
       if (!password_verify($spwd, $hpwd)) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
         $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')"); // Inserting Login Attempt in the DB
       } elseif ($isTest == 1) {
         if ($arr['TestAccess'] == 1) {
           $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1"; // Distributing Game Token
+          $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Tester accessed Test Town.')");
         } else {
           $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=You're unable to participate in Test Town.\n";
           $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Trying to access Test server.')");
         }
       } elseif ($isClosed == 1) {
-        if ($arr['Ranking'] == 'Admin' || $arr['Ranking'] == 'Developer' || $arr['Ranking'] == 'Moderator') {
+        if ($arr['Ranking'] == 'Administrator' || $arr['Ranking'] == 'Developer' || $arr['Ranking'] == 'Moderator') {
           $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1";
+          $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Staff Member accessed Closed Server')");
         } else {
           $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Server is closed for maintenance\n";
           $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Trying to access closed server.')");
         }
+      } elseif ($arr['Verified'] == 0) {
+        $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Account isn't verified.\n";
+        $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Unverified account.')");
+      } else {
+        $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1";
       }
     }
   }
