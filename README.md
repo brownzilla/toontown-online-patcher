@@ -12,7 +12,7 @@ Server files for handling a login via the original Toontown Online launcher. The
 | ID         | ID             |
 | Username   | Username       |
 | Password   | IP             |
-| Ranking    | Location       |
+| Ranking    | Reason         |
 | Banned     |
 | TestAccess |
 | Verified   |
