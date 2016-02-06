@@ -7,7 +7,7 @@ Server files for handling a login via the original Toontown Online launcher. The
 * PHP5.5+ & MySQL 5.5.46+
 * The *Disney's Toontown Online* launcher
 
-| users      | login_attempts |
+| Users      | LoginAttempts |
 |------------|----------------|
 | ID         | ID             |
 | Username   | Username       |
