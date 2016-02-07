@@ -4,3 +4,7 @@
   Author URL: https://brownzilla.me
   Version: 0.1
 */
+
+body { padding-top: 80px; } /* I know this isn't the correct way but I'm really just trying to show off the launcher. :^) */
+
+.panel { max-width: 100%; padding: 25px 25px 25px 25px; }
