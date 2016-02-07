@@ -14,7 +14,7 @@
     <div class="container">
       <div class="col-sm-6 col-sm-offset-3">
         <div class="panel panel-default">
-          <h1><span class="fa fa-sign-in"></span> Login</h1>
+          <h1><span class="fa fa-sign-in"></span> Register</h1>
           <form method="post">
             <div class="form-group">
               <label>Username</label>
@@ -31,7 +31,7 @@
             <div class="form-group">
               <div class="g-recaptcha" data-sitekey="SITE_KEY_HERE"></div>
             </div>
-            <button type="submit" name="Submit" class="btn btn-primary btn-lg">Login</button>
+            <button type="submit" name="Submit" class="btn btn-primary btn-lg">Register</button>
           </form>
         </div>
       </div>
