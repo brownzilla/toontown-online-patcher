@@ -12,7 +12,7 @@
     $db       = '';
 
     # Grabbing the password.This is to insure DB security.
-    $pwdLoc = $_SERVER['DOCUMENT_ROOT'] . '/../password.json';
+    $pwdLoc = $_SERVER['DOCUMENT_ROOT'] . '/password.json';
     if (file_exists($pwdLoc)) {
       $fo = fopen($pwdLoc, 'r');
       $json = fgets($fo);

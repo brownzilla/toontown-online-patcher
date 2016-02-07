@@ -15,7 +15,7 @@
     if (!$re) {
       $output = "<div class='alert alert-danger'><strong>Uh oh!</strong> Please do the captcha!</div>";
     } else {
-      $resp = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=SECERT_KEY_HERE&response=".$re."&remoteip=".$_SERVER['REMOTE_ADDR']"");
+      $resp = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=SECRET_KEY_HERE&response=".$re."&remoteip=".$_SERVER['REMOTE_ADDR']."");
       if ($resp.success == false) {
         $output = '<div class="alert alert-danger"><strong>Uh oh!</strong> Are you a bot? Try again.</div>';
       } else {
