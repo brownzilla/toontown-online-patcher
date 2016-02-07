@@ -9,7 +9,7 @@
   include 'default.php';
   $db = doDB();
   $response = "Toontown Online Launcher API. https://github.com/brownzilla/toontown-online-patcher/"; // I would greatly appreciate it if you didn't change this. :^)
-  $salt = "SMASH-YOUR-KEYBOARD-HERE"; // This is used to add extra protection to your logins.
+  $salt = "SPAM-YOUR-KEYBOARD-HERE";; // This is used to add extra protection to your logins.
 
   // Server Accessibility.
   $isTest   = 0;
@@ -27,18 +27,18 @@
 
   // Finally, the IF statement. Only edit if you know what's happening.
   if ($stmt->num_rows < 1) {
-    $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Unable to retrieve account "$usr".\n"; // Checking to see if the account exists.
+    $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Unable to retrieve account ".$usr.".\n"; // Checking to see if the account exists.
   } else {
     while ($arr = $stmt->fetch_assoc()) {
       $ID = $arr['ID'];
       $hpwd = $arr['Password']; // Grabbing the User's password.
-      $gmTok = hash('base64', $hpwd); // Encrypting the salt encrypted password. Wow, I love security. :^)
+      $gmTok = hash('sha256', $hpwd); // Encrypting the salt encrypted password. Wow, I love security. :^)
       if (!password_verify($spwd, $hpwd)) {
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Password was incorrect. Please try again.\n"; // Checking to see if the password is incorrect.
         $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Password was incorrect.')"); // Inserting Login Attempt in the DB
       } elseif ($isTest == 1) {
         if ($arr['TestAccess'] == 1) {
-          $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1"; // Distributing Game Token
+          $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=".$usr."\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1"; // Distributing Game Token
           $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Tester accessed Test Town.')");
         } else {
           $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=You're unable to participate in Test Town.\n";
@@ -56,10 +56,9 @@
         $response = "LOGIN_ACTION=LOGIN\nLOGIN_ERROR=LOGIN_FAILED\nGLOBAL_DISPLAYTEXT=Account isn't verified.\n";
         $db->query("INSERT INTO LoginAttempts (`IP`, `Username`, `Reason`) VALUES('$ip', '$usr', 'Unverified account.')");
       } else {
-        $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=$gmTok\nGAME_USERNAME=$usr\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1";
+        $response = "LOGIN_ACTION=PLAY\nLOGIN_TOKEN=".$gmTok."\nGAME_USERNAME=".$usr."\nGAME_DISL_ID=$ID\nUSER_TOONTOWN_ACCESS=FULL\nGAME_CHAT_ELIGIBLE=1";
       }
     }
   }
 
   echo $response;
-  exit();
