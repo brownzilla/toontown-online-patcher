@@ -1,7 +1,7 @@
 <?php
   include '../api/login/default.php';
   $db = doDB();
-  $salt = "SPAM-YOUR-KEYBOARD-HERE";
+  $salt = grabSalt();
   $output = "";
 
   if (isset($_POST['Submit'])) {
@@ -11,7 +11,7 @@
     $hpwd    = password_hash($spwd, PASSWORD_DEFAULT);
     $pwdConf = $_POST['pwdConf'];
     $re      = $_POST['g-recaptcha-response'];
-    $sql     = "INSERT INTO `Users` (Username, Password) VALUES ('$usr', '$hpwd')";
+    $sql     = "INSERT INTO Users (Username, Password) VALUES ('$usr', '$hpwd')";
     if (!$re) {
       $output = "<div class='alert alert-danger'><strong>Uh oh!</strong> Please do the captcha!</div>";
     } else {
@@ -30,6 +30,4 @@
         }
       }
     }
-  } else {
-    $output = "Please use the <a href='https://demo.plaim.ml/tto-patcher/register>register</a> to add an account.'";
   }

@@ -9,7 +9,7 @@
   include 'default.php';
   $db = doDB();
   $response = "Toontown Online Launcher API. https://github.com/brownzilla/toontown-online-patcher/"; // I would greatly appreciate it if you didn't change this. :^)
-  $salt = "SPAM-YOUR-KEYBOARD-HERE";; // This is used to add extra protection to your logins.
+  $salt = grabSalt(); // This is used to add extra protection to your logins.
 
   // Server Accessibility.
   $isTest   = 0;

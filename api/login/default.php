@@ -24,3 +24,9 @@
     $db = new mysqli($dbHost, $dbUser, $dbPass, $db);
     return $db;
   }
+
+  function grabSalt() {
+    // This is where the salt is going to be stored. Try not to give it out to anyone. :^)
+    $salt = "SPAM-YOUR-KEYBOARD-HERE";
+    return $salt;
+  }
