@@ -14,11 +14,9 @@
     # Grabbing the password.This is to insure DB security.
     $pwdLoc = $_SERVER['DOCUMENT_ROOT'] . '/password.json';
     if (file_exists($pwdLoc)) {
-      $fo = fopen($pwdLoc, 'r');
-      $json = fgets($fo);
-      $str = json_decode($json, true);
-      $dbPass = $str['default-password'];
-      fclose($fo);
+      $json = file_get_contents($pwdLoc);
+      $arr = json_decode($json, TRUE);
+      $dbPass = $arr['default-password'];
     } else {
       die('Unable to find password.json');
     }
