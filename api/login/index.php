@@ -16,7 +16,7 @@
   $isClosed = 0;
 
   // Where the server gets the data. e.g https://example.com/api/login/?u=demo&p=demo
-  $usr  = $_GET['u']; // Unfortunately, I'm unable to change these. They're in the latest build of the launcher.
+  $usr  = $_GET['n']; // Unfortunately, I'm unable to change these. They're in the latest build of the launcher.
   $pwd  = $_GET['p'];
   $spwd = $salt . $pwd; // Combinding the salt and pwd together.
   $ip   = $_SERVER['REMOTE_ADDR'];
